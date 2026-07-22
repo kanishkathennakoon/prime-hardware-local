@@ -119,3 +119,11 @@ export function calculateInventoryKPIs(
     totalStockQuantity,
   };
 }
+
+export type StockStatus = 'out_of_stock' | 'low_stock' | 'in_stock';
+
+export function getStockBadgeStatus(stock: number, threshold: number = 10): StockStatus {
+  if (stock <= 0) return 'out_of_stock';
+  if (stock <= threshold) return 'low_stock';
+  return 'in_stock';
+}

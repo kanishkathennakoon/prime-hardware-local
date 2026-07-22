@@ -16,6 +16,8 @@ import {
 import { formatCurrency } from '@/lib/utils';
 import { DollarSign, ShoppingBag, TrendingUp } from 'lucide-react';
 
+import ReportsNav from '@/components/admin/reports-nav';
+
 export const metadata = {
   title: 'Sales Report - Admin Dashboard',
 };
@@ -45,6 +47,8 @@ export default async function SalesReportPage({ searchParams }: SalesReportPageP
 
   return (
     <div className='space-y-6'>
+      <ReportsNav />
+
       <div>
         <h1 className='h2-bold'>Sales Report</h1>
         <p className='text-muted-foreground'>
