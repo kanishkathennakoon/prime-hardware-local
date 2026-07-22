@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import sampleData from './sample-data';
 import { hash } from '@/lib/encrypt';
