@@ -176,7 +176,7 @@ const config: Config = {
   // testRunner: "jest-circus/runner",
 
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': ['ts-jest', { tsconfig: { allowJs: true } }],
+    '^.+\\.(ts|tsx|js|jsx)$': ['ts-jest', { tsconfig: { allowJs: true, jsx: 'react-jsx' } }],
   },
   transformIgnorePatterns: [
     '/node_modules/(?!(query-string|decode-uri-component|split-on-first|filter-obj)/)',
