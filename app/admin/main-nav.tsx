@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import React from 'react';
 
-const links = [
+export const adminNavLinks = [
   {
     title: 'Overview',
     href: '/admin/overview',
@@ -21,6 +21,10 @@ const links = [
     title: 'Users',
     href: '/admin/users',
   },
+  {
+    title: 'Reports',
+    href: '/admin/reports/sales',
+  },
 ];
 
 const MainNav = ({
@@ -33,7 +37,7 @@ const MainNav = ({
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
-      {links.map((item) => (
+      {adminNavLinks.map((item) => (
         <Link
           key={item.href}
           href={item.href}

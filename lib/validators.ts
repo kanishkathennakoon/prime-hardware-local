@@ -164,3 +164,10 @@ export const salesReportQuerySchema = z
       path: ['startDate'],
     }
   );
+
+// Schema for inventory report query parameters
+export const inventoryReportQuerySchema = z.object({
+  threshold: z.coerce.number().int().nonnegative('Threshold must be a non-negative integer').optional().default(10),
+  category: z.string().optional(),
+  sortBy: z.enum(['stock_asc', 'stock_desc', 'sales_volume_desc', 'name_asc']).optional().default('stock_asc'),
+});
