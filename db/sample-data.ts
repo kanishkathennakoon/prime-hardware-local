@@ -213,6 +213,26 @@ const sampleData = {
       isFeatured: false,
       banner: null,
     },
+    {
+      name: 'ATG MaxiFlex Ultimate Palm Coated Handling Gloves 42-874',
+      slug: 'atg-maxiflex-ultimate-palm-coated-handling-gloves-42-874',
+      category: "Safety Items",
+      description: 'ATG MaxiFlex Ultimate Palm Coated Handling Gloves 42-874 are designed for superior comfort, dexterity, and grip in various handling applications. The gloves feature a breathable liner that reduces hand fatigue and enhances flexibility, while the palm coating provides excellent grip and protection against oils and abrasions. Ideal for precision work, assembly tasks, and general handling, these gloves offer reliable performance and long-lasting durability for professionals in industrial, automotive, and manufacturing environments.',
+      images: [
+        '/images/sample-products/p12-1.jpg',
+        '/images/sample-products/p12-2.jpg',
+        '/images/sample-products/p12-3.jpg',
+        '/images/sample-products/p12-4.jpg',
+        '/images/sample-products/p12-5.jpg',
+      ],
+      price: 1435,
+      brand: 'MaxiFlex',
+      rating: 4.7,
+      numReviews: 112,
+      stock: 201,
+      isFeatured: false,
+      banner: null,
+    },
   ],
 };
 
