@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { BarChart3, Boxes } from 'lucide-react';
+import { BarChart3, Boxes, Users } from 'lucide-react';
 import ExportPdfButton from '@/components/admin/export-pdf-button';
 
 export const reportNavLinks = [
@@ -18,7 +18,13 @@ export const reportNavLinks = [
     href: '/admin/reports/inventory',
     icon: Boxes,
   },
+  {
+    title: 'Customer Analytics',
+    href: '/admin/reports/customer-analytics',
+    icon: Users,
+  },
 ];
+
 
 export default function ReportsNav() {
   const pathname = usePathname();

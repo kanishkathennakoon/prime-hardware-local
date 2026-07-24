@@ -171,3 +171,11 @@ export const inventoryReportQuerySchema = z.object({
   category: z.string().optional(),
   sortBy: z.enum(['stock_asc', 'stock_desc', 'sales_volume_desc', 'name_asc']).optional().default('stock_asc'),
 });
+
+// Schema for customer analytics query parameters
+export const customerAnalyticsQuerySchema = z.object({
+  sortBy: z.enum(['lifetime_spend_desc', 'order_count_desc', 'last_order_desc', 'name_asc']).optional().default('lifetime_spend_desc'),
+  minSpend: z.coerce.number().nonnegative('Minimum spend must be a non-negative number').optional(),
+  minOrders: z.coerce.number().int().nonnegative('Minimum orders must be a non-negative integer').optional(),
+});
+
