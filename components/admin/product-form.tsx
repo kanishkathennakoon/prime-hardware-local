@@ -21,7 +21,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { createProduct, updateProduct } from '@/lib/actions/product.actions';
-import { UploadButton } from '@/lib/uploadthing';
+import FileUploader from './file-uploader';
 import { Card, CardContent } from '../ui/card';
 import Image from 'next/image';
 import { Checkbox } from '../ui/checkbox';
@@ -270,16 +270,10 @@ const ProductForm = ({
                         />
                       ))}
                       <FormControl>
-                        <UploadButton
-                          endpoint='imageUploader'
-                          onClientUploadComplete={(res: { url: string }[]) => {
-                            form.setValue('images', [...images, res[0].url]);
-                          }}
-                          onUploadError={(error: Error) => {
-                            toast({
-                              variant: 'destructive',
-                              description: `ERROR! ${error.message}`,
-                            });
+                        <FileUploader
+                          folder={form.watch('slug') || 'general'}
+                          onUploadComplete={(url: string) => {
+                            form.setValue('images', [...images, url]);
                           }}
                         />
                       </FormControl>
@@ -322,16 +316,10 @@ const ProductForm = ({
               )}
 
               {isFeatured && !banner && (
-                <UploadButton
-                  endpoint='imageUploader'
-                  onClientUploadComplete={(res: { url: string }[]) => {
-                    form.setValue('banner', res[0].url);
-                  }}
-                  onUploadError={(error: Error) => {
-                    toast({
-                      variant: 'destructive',
-                      description: `ERROR! ${error.message}`,
-                    });
+                <FileUploader
+                  folder={form.watch('slug') || 'general'}
+                  onUploadComplete={(url: string) => {
+                    form.setValue('banner', url);
                   }}
                 />
               )}
