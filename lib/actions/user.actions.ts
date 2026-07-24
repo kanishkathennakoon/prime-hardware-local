@@ -6,7 +6,9 @@ import {
   signUpFormSchema,
   paymentMethodSchema,
   updateUserSchema,
+  updateProfileSchema,
 } from '../validators';
+
 import { auth, signIn, signOut } from '@/auth';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { hash } from '../encrypt';
@@ -155,7 +157,7 @@ export async function updateUserPaymentMethod(
 }
 
 // Update the user profile
-export async function updateProfile(user: { name: string; email: string }) {
+export async function updateProfile(user: z.infer<typeof updateProfileSchema>) {
   try {
     const session = await auth();
 
@@ -167,12 +169,21 @@ export async function updateProfile(user: { name: string; email: string }) {
 
     if (!currentUser) throw new Error('User not found');
 
+    const address = {
+      fullName: user.name,
+      streetAddress: user.streetAddress || '',
+      city: user.city || '',
+      postalCode: user.postalCode || '',
+      country: user.country || '',
+    };
+
     await prisma.user.update({
       where: {
         id: currentUser.id,
       },
       data: {
         name: user.name,
+        address,
       },
     });
 
@@ -184,6 +195,7 @@ export async function updateProfile(user: { name: string; email: string }) {
     return { success: false, message: formatError(error) };
   }
 }
+
 
 // Get all the users
 export async function getAllUsers({
