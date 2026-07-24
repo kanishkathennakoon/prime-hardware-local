@@ -179,3 +179,10 @@ export const customerAnalyticsQuerySchema = z.object({
   minOrders: z.coerce.number().int().nonnegative('Minimum orders must be a non-negative integer').optional(),
 });
 
+// Schema for abandoned cart report query parameters
+export const abandonedCartReportQuerySchema = z.object({
+  thresholdHours: z.coerce.number().int().positive('Threshold hours must be a positive integer').optional().default(24),
+  sortBy: z.enum(['created_at_desc', 'created_at_asc', 'total_price_desc', 'items_count_desc']).optional().default('created_at_desc'),
+});
+
+

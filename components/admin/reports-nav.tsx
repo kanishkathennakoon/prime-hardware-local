@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { BarChart3, Boxes, Users } from 'lucide-react';
+import { BarChart3, Boxes, Users, ShoppingCart } from 'lucide-react';
 import ExportPdfButton from '@/components/admin/export-pdf-button';
 
 export const reportNavLinks = [
@@ -23,7 +23,13 @@ export const reportNavLinks = [
     href: '/admin/reports/customer-analytics',
     icon: Users,
   },
+  {
+    title: 'Abandoned Carts',
+    href: '/admin/reports/abandoned-carts',
+    icon: ShoppingCart,
+  },
 ];
+
 
 
 export default function ReportsNav() {
