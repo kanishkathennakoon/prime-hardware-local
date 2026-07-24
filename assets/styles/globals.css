@@ -110,3 +110,38 @@ html.dark .upload-field .text-white {
 .upload-field .text-white {
   color: #000 !important;
 }
+
+/* Print optimization styles for PDF Export */
+@media print {
+  .no-print,
+  header,
+  aside,
+  nav:not(.print-nav),
+  button:not(.print-visible),
+  .admin-sidebar {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .card,
+  .border {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    padding: 6px 8px !important;
+  }
+}
+

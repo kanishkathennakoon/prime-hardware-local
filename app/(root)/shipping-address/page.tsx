@@ -24,10 +24,22 @@ const ShippingAddressPage = async () => {
 
   const user = await getUserById(userId);
 
+  const userAddress = user.address as Partial<ShippingAddress> | null;
+
+  const defaultShippingAddress: ShippingAddress = {
+    fullName: userAddress?.fullName || user.name || '',
+    streetAddress: userAddress?.streetAddress || '',
+    city: userAddress?.city || '',
+    postalCode: userAddress?.postalCode || '',
+    country: userAddress?.country || '',
+    lat: userAddress?.lat,
+    lng: userAddress?.lng,
+  };
+
   return (
     <>
       <CheckoutSteps current={1} />
-      <ShippingAddressForm address={user.address as ShippingAddress} />
+      <ShippingAddressForm address={defaultShippingAddress} />
     </>
   );
 };

@@ -123,9 +123,14 @@ export const paymentResultSchema = z.object({
 
 // Schema for updating the user profile
 export const updateProfileSchema = z.object({
-  name: z.string().min(3, 'Name must be at leaast 3 characters'),
-  email: z.string().min(3, 'Email must be at leaast 3 characters'),
+  name: z.string().min(3, 'Name must be at least 3 characters'),
+  email: z.string().min(3, 'Email must be at least 3 characters'),
+  streetAddress: z.string().optional(),
+  city: z.string().optional(),
+  postalCode: z.string().optional(),
+  country: z.string().optional(),
 });
+
 
 // Schema to update users
 export const updateUserSchema = updateProfileSchema.extend({
@@ -171,3 +176,18 @@ export const inventoryReportQuerySchema = z.object({
   category: z.string().optional(),
   sortBy: z.enum(['stock_asc', 'stock_desc', 'sales_volume_desc', 'name_asc']).optional().default('stock_asc'),
 });
+
+// Schema for customer analytics query parameters
+export const customerAnalyticsQuerySchema = z.object({
+  sortBy: z.enum(['lifetime_spend_desc', 'order_count_desc', 'last_order_desc', 'name_asc']).optional().default('lifetime_spend_desc'),
+  minSpend: z.coerce.number().nonnegative('Minimum spend must be a non-negative number').optional(),
+  minOrders: z.coerce.number().int().nonnegative('Minimum orders must be a non-negative integer').optional(),
+});
+
+// Schema for abandoned cart report query parameters
+export const abandonedCartReportQuerySchema = z.object({
+  thresholdHours: z.coerce.number().int().positive('Threshold hours must be a positive integer').optional().default(24),
+  sortBy: z.enum(['created_at_desc', 'created_at_asc', 'total_price_desc', 'items_count_desc']).optional().default('created_at_desc'),
+});
+
+

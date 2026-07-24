@@ -2,7 +2,12 @@
 
 import { auth } from '@/auth';
 import { prisma } from '@/db/prisma';
-import { salesReportQuerySchema, inventoryReportQuerySchema } from '../validators';
+import {
+  salesReportQuerySchema,
+  inventoryReportQuerySchema,
+  customerAnalyticsQuerySchema,
+  abandonedCartReportQuerySchema,
+} from '../validators';
 import {
   formatMonthlySales,
   calculateSalesKPIs,
@@ -18,6 +23,21 @@ import {
   TopSellingProduct,
   InventoryKPIs,
 } from '../utils/inventory-report-helpers';
+import {
+  calculateCustomerMetrics,
+  calculateCustomerKPIs,
+  filterAndSortCustomers,
+  CustomerMetric,
+  CustomerAnalyticsKPIs,
+} from '../utils/customer-analytics-helpers';
+import {
+  filterAbandonedCarts,
+  calculateAbandonedCartKPIs,
+  sortAbandonedCarts,
+  AbandonedCartRecord,
+  AbandonedCartKPIs,
+} from '../utils/abandoned-cart-helpers';
+
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 
@@ -33,6 +53,7 @@ export async function getSalesReportData(
   success: boolean;
   data?: SalesReportResponseData;
   message?: string;
+  error?: string;
 }> {
   try {
     const session = await auth();
@@ -40,6 +61,7 @@ export async function getSalesReportData(
       return {
         success: false,
         message: 'User is not authorized',
+        error: 'User is not authorized',
       };
     }
 
@@ -48,6 +70,7 @@ export async function getSalesReportData(
       return {
         success: false,
         message: validationResult.error.issues[0]?.message || 'Invalid parameters',
+        error: validationResult.error.issues[0]?.message || 'Invalid parameters',
       };
     }
 
@@ -86,6 +109,7 @@ export async function getSalesReportData(
     return {
       success: false,
       message: errorMessage,
+      error: errorMessage,
     };
   }
 }
@@ -105,6 +129,7 @@ export async function getInventoryReportData(
   success: boolean;
   data?: InventoryReportResponseData;
   message?: string;
+  error?: string;
 }> {
   try {
     const session = await auth();
@@ -112,6 +137,7 @@ export async function getInventoryReportData(
       return {
         success: false,
         message: 'User is not authorized',
+        error: 'User is not authorized',
       };
     }
 
@@ -120,6 +146,7 @@ export async function getInventoryReportData(
       return {
         success: false,
         message: validationResult.error.issues[0]?.message || 'Invalid parameters',
+        error: validationResult.error.issues[0]?.message || 'Invalid parameters',
       };
     }
 
@@ -184,6 +211,143 @@ export async function getInventoryReportData(
     return {
       success: false,
       message: errorMessage,
+      error: errorMessage,
     };
   }
 }
+
+export interface CustomerAnalyticsResponseData {
+  kpis: CustomerAnalyticsKPIs;
+  customers: CustomerMetric[];
+}
+
+export async function getCustomerAnalyticsData(
+  queryInput?: z.input<typeof customerAnalyticsQuerySchema>
+): Promise<{
+  success: boolean;
+  data?: CustomerAnalyticsResponseData;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    const session = await auth();
+    if (!session || session?.user?.role !== 'admin') {
+      return {
+        success: false,
+        message: 'User is not authorized',
+        error: 'User is not authorized',
+      };
+    }
+
+    const validationResult = customerAnalyticsQuerySchema.safeParse(queryInput || {});
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: validationResult.error.issues[0]?.message || 'Invalid parameters',
+        error: validationResult.error.issues[0]?.message || 'Invalid parameters',
+      };
+    }
+
+    const { sortBy, minSpend, minOrders } = validationResult.data;
+
+    const usersWithOrdersRaw = await prisma.user.findMany({
+      include: {
+        Order: true,
+      },
+    });
+
+    const rawMetrics = calculateCustomerMetrics(usersWithOrdersRaw as any);
+    const kpis = calculateCustomerKPIs(rawMetrics);
+    const filteredCustomers = filterAndSortCustomers(rawMetrics, {
+      sortBy,
+      minSpend,
+      minOrders,
+    });
+
+    return {
+      success: true,
+      data: {
+        kpis,
+        customers: filteredCustomers,
+      },
+    };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch customer analytics data';
+    return {
+      success: false,
+      message: errorMessage,
+      error: errorMessage,
+    };
+  }
+}
+
+export interface AbandonedCartReportResponseData {
+  kpis: AbandonedCartKPIs;
+  abandonedCarts: AbandonedCartRecord[];
+  thresholdHours: number;
+}
+
+export async function getAbandonedCartReportData(
+  queryInput?: z.input<typeof abandonedCartReportQuerySchema>
+): Promise<{
+  success: boolean;
+  data?: AbandonedCartReportResponseData;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    const session = await auth();
+    if (!session || session?.user?.role !== 'admin') {
+      return {
+        success: false,
+        message: 'User is not authorized',
+        error: 'User is not authorized',
+      };
+    }
+
+    const validationResult = abandonedCartReportQuerySchema.safeParse(queryInput || {});
+    if (!validationResult.success) {
+      return {
+        success: false,
+        message: validationResult.error.issues[0]?.message || 'Invalid parameters',
+        error: validationResult.error.issues[0]?.message || 'Invalid parameters',
+      };
+    }
+
+    const { thresholdHours, sortBy } = validationResult.data;
+
+    const rawCarts = await prisma.cart.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    const now = new Date();
+    const filtered = filterAbandonedCarts(rawCarts as any, thresholdHours, now);
+    const kpis = calculateAbandonedCartKPIs(filtered, thresholdHours);
+    const sortedCarts = sortAbandonedCarts(filtered, sortBy);
+
+    return {
+      success: true,
+      data: {
+        kpis,
+        abandonedCarts: sortedCarts,
+        thresholdHours,
+      },
+    };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch abandoned cart report data';
+    return {
+      success: false,
+      message: errorMessage,
+      error: errorMessage,
+    };
+  }
+}
+
+
