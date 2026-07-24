@@ -1,8 +1,8 @@
-import { generateAccessToken, paypal } from '../lib/paypal';
+import { generateAccessToken, paypal } from '@/lib/paypal';
 
 // Test to generate access token from paypal
 test('generates token from paypal', async () => {
-  const mockToken = jest.spyOn(require('../lib/paypal'), 'generateAccessToken').mockResolvedValue('access-token-123');
+  const mockToken = jest.spyOn(require('@/lib/paypal'), 'generateAccessToken').mockResolvedValue('access-token-123');
   const tokenResponse = await generateAccessToken();
   expect(typeof tokenResponse).toBe('string');
   expect(tokenResponse.length).toBeGreaterThan(0);
