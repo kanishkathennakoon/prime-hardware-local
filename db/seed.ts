@@ -282,6 +282,48 @@ async function main() {
   });
   console.log('Seeded sample abandoned cart record.');
 
+  // 5. Seed Reviews & Recalculate Aggregate Product Ratings
+  let reviewCount = 0;
+  if ((sampleData as any).reviews) {
+    for (const r of (sampleData as any).reviews) {
+      const u = createdUsers.find((user) => user.email === r.userEmail);
+      const p = createdProducts.find((product) => product.slug === r.productSlug);
+      if (u && p) {
+        await prisma.review.create({
+          data: {
+            userId: u.id,
+            productId: p.id,
+            title: r.title,
+            description: r.description,
+            rating: r.rating,
+          },
+        });
+        reviewCount++;
+      }
+    }
+  }
+
+  // Recalculate rating and numReviews for all products
+  const allProducts = await prisma.product.findMany();
+  for (const prod of allProducts) {
+    const count = await prisma.review.count({
+      where: { productId: prod.id },
+    });
+    const aggregate = await prisma.review.aggregate({
+      _avg: { rating: true },
+      where: { productId: prod.id },
+    });
+
+    await prisma.product.update({
+      where: { id: prod.id },
+      data: {
+        rating: aggregate._avg.rating || 0,
+        numReviews: count,
+      },
+    });
+  }
+  console.log(`Seeded ${reviewCount} sample reviews and updated product aggregate ratings.`);
+
   console.log('Database seeded successfully!');
 }
 
