@@ -216,7 +216,59 @@ async function main() {
         { productIndex: 0, qty: 1, price: 60.00 },
       ],
     },
+    {
+      userId: davidUser.id,
+      createdAt: new Date('2026-07-12T14:00:00Z'),
+      itemsPrice: 420.00,
+      shippingPrice: 10.0,
+      taxPrice: 42.0,
+      totalPrice: 472.00,
+      isPaid: true,
+      paidAt: new Date('2026-07-12T14:05:00Z'),
+      isDelivered: true,
+      deliveredAt: new Date('2026-07-14T10:00:00Z'),
+      paymentMethod: 'PayPal',
+      shippingAddress: { fullName: 'David Perera', streetAddress: '78 Kandy Rd', city: 'Kiribathgoda', postalCode: '11600', country: 'Sri Lanka' },
+      items: [
+        { productIndex: 7, qty: 1, price: 420.00 },
+      ],
+    },
+    {
+      userId: sarahUser.id,
+      createdAt: new Date('2026-07-15T09:30:00Z'),
+      itemsPrice: 1435.00,
+      shippingPrice: 15.0,
+      taxPrice: 143.50,
+      totalPrice: 1593.50,
+      isPaid: true,
+      paidAt: new Date('2026-07-15T09:35:00Z'),
+      isDelivered: true,
+      deliveredAt: new Date('2026-07-17T16:00:00Z'),
+      paymentMethod: 'CashOnDelivery',
+      shippingAddress: { fullName: 'Sarah Jenkins', streetAddress: '45 Galle Rd', city: 'Dehiwala', postalCode: '10350', country: 'Sri Lanka' },
+      items: [
+        { productIndex: 11, qty: 1, price: 1435.00 },
+      ],
+    },
+    {
+      userId: regularUser.id,
+      createdAt: new Date('2026-07-18T16:20:00Z'),
+      itemsPrice: 1045.00,
+      shippingPrice: 10.0,
+      taxPrice: 104.50,
+      totalPrice: 1159.50,
+      isPaid: true,
+      paidAt: new Date('2026-07-18T16:25:00Z'),
+      isDelivered: true,
+      deliveredAt: new Date('2026-07-20T11:00:00Z'),
+      paymentMethod: 'PayPal',
+      shippingAddress: { fullName: regularUser.name, streetAddress: '123 Main St', city: 'Colombo', postalCode: '00100', country: 'Sri Lanka' },
+      items: [
+        { productIndex: 6, qty: 1, price: 1045.00 },
+      ],
+    },
   ];
+
 
   let orderCount = 0;
   for (const orderData of sampleOrdersData) {

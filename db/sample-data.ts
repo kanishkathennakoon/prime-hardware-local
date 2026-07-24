@@ -263,8 +263,30 @@ const sampleData = {
       description: 'Excellent ceiling paint! Covered dark spots nicely and brightened up our living room.',
       rating: 4,
     },
+    {
+      userEmail: 'david@example.com',
+      productSlug: 'orange-led-bulbs-w-w-screw-type-e27',
+      title: 'Warm & Energy Efficient',
+      description: 'Bright warm white illumination for our shop showroom. Low power usage and great build quality.',
+      rating: 5,
+    },
+    {
+      userEmail: 'sarah@example.com',
+      productSlug: 'atg-maxiflex-ultimate-palm-coated-handling-gloves-42-874',
+      title: 'Superior Comfort & Firm Grip',
+      description: 'The best handling gloves for electrical and assembly work. Super breathable and flexible.',
+      rating: 5,
+    },
+    {
+      userEmail: 'user@example.com',
+      productSlug: '13-a-socket-kevilton-electric-socket-product',
+      title: 'Sturdy & Easy to Install',
+      description: 'Solid terminal connections and clean white finish. Fits standard mounting boxes smoothly.',
+      rating: 4,
+    },
   ],
 };
 
 export default sampleData;
+
 

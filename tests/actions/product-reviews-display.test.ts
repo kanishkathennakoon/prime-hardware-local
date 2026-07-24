@@ -46,7 +46,7 @@ describe('Product Reviews Display & Seed Data - Feature F-19', () => {
   it('should safely fall back to matching user email if session user ID is stale or un-synced', async () => {
     // Get valid user and product from database
     const dbUser = await prisma.user.findFirst({ where: { email: 'user@example.com' } });
-    const sampleProduct = await prisma.product.findFirst();
+    const sampleProduct = await prisma.product.findFirst({ where: { slug: 'rhino-premier-roofing-sheet' } });
     if (!dbUser || !sampleProduct) return;
 
     // Mock user session with non-matching UUID but valid email
