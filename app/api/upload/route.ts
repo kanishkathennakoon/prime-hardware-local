@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, rm } from 'fs/promises';
 import path from 'path';
 
 export async function POST(req: Request) {
@@ -57,6 +57,56 @@ export async function POST(req: Request) {
       {
         success: false,
         message: error instanceof Error ? error.message : 'File upload failed',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const session = await auth();
+
+    if (!session || session.user?.role !== 'admin') {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized. Admin role required.' },
+        { status: 401 }
+      );
+    }
+
+    const { url } = await req.json();
+
+    if (!url || typeof url !== 'string') {
+      return NextResponse.json(
+        { success: false, message: 'Image URL is required' },
+        { status: 400 }
+      );
+    }
+
+    // Security check: only allow deletion within /images/products/ or /uploads/
+    const normalizedUrl = path.normalize(url);
+    if (
+      !normalizedUrl.startsWith('/images/products/') &&
+      !normalizedUrl.startsWith('/uploads/')
+    ) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid image path' },
+        { status: 400 }
+      );
+    }
+
+    const fullPath = path.join(process.cwd(), 'public', normalizedUrl);
+    await rm(fullPath, { force: true });
+
+    return NextResponse.json({
+      success: true,
+      message: 'File deleted successfully',
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: error instanceof Error ? error.message : 'File deletion failed',
       },
       { status: 500 }
     );
