@@ -48,6 +48,23 @@ export async function createUpdateReview(
 
     if (!product) throw new Error('Product not found');
 
+    // Verify user is a verified purchaser who paid for this product
+    const hasPurchased = await prisma.order.findFirst({
+      where: {
+        userId: user.id,
+        isPaid: true,
+        orderitems: {
+          some: { productId: review.productId },
+        },
+      },
+    });
+
+    if (!hasPurchased) {
+      throw new Error(
+        'Only verified purchasers who have bought and paid for this item can leave a review.'
+      );
+    }
+
     // Check if user already reviewed
     const reviewExists = await prisma.review.findFirst({
       where: {
@@ -156,4 +173,34 @@ export async function getReviewByProductId({
       userId: user.id,
     },
   });
+}
+
+// Check if current user is a verified purchaser for a product
+export async function getCanUserReview({ productId }: { productId: string }) {
+  const session = await auth();
+
+  if (!session || !session.user) return false;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        ...(isValidUuid(session.user.id) ? [{ id: session.user.id as string }] : []),
+        ...(session.user.email ? [{ email: session.user.email as string }] : []),
+      ],
+    },
+  });
+
+  if (!user) return false;
+
+  const purchase = await prisma.order.findFirst({
+    where: {
+      userId: user.id,
+      isPaid: true,
+      orderitems: {
+        some: { productId },
+      },
+    },
+  });
+
+  return !!purchase;
 }
