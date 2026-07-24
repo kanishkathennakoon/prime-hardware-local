@@ -15,12 +15,15 @@ describe('Customer Analytics Frontend - Feature F-04', () => {
   });
 
   describe('Formatting Utilities', () => {
-    it('should format customer spend metrics using formatCurrency helper', () => {
+    it('should format customer spend metrics using formatCurrency helper with Rs.', () => {
       const formattedTotalSpend = formatCurrency(1850.75);
       const formattedAvgSpend = formatCurrency(462.6875);
 
+      expect(formattedTotalSpend).toContain('Rs.');
       expect(formattedTotalSpend).toContain('1,850.75');
+      expect(formattedAvgSpend).toContain('Rs.');
       expect(formattedAvgSpend).toContain('462.69');
     });
   });
+
 });

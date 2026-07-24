@@ -54,17 +54,17 @@ export function round2(value: number | string) {
 }
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
-  currency: 'USD',
-  style: 'currency',
   minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 });
 
-// Format currency using the formatter above
+// Format currency using Rs. prefix
 export function formatCurrency(amount: number | string | null) {
   if (typeof amount === 'number') {
-    return CURRENCY_FORMATTER.format(amount);
+    return `Rs. ${CURRENCY_FORMATTER.format(amount)}`;
   } else if (typeof amount === 'string') {
-    return CURRENCY_FORMATTER.format(Number(amount));
+    const num = Number(amount);
+    return isNaN(num) ? 'NaN' : `Rs. ${CURRENCY_FORMATTER.format(num)}`;
   } else {
     return 'NaN';
   }
@@ -76,6 +76,7 @@ const NUMBER_FORMATTER = new Intl.NumberFormat('en-US');
 export function formatNumber(number: number) {
   return NUMBER_FORMATTER.format(number);
 }
+
 
 // Shorten UUID
 export function formatId(id: string) {

@@ -217,7 +217,8 @@ const ProductForm = ({
               >;
             }) => (
               <FormItem className='w-full'>
-                <FormLabel>Price</FormLabel>
+                <FormLabel>Price (Rs.)</FormLabel>
+
                 <FormControl>
                   <Input placeholder='Enter product price' {...field} />
                 </FormControl>

@@ -15,12 +15,15 @@ describe('Abandoned Cart Report Frontend - Feature F-05', () => {
   });
 
   describe('Formatting Utilities', () => {
-    it('should format lost revenue and cart values using formatCurrency helper', () => {
+    it('should format lost revenue and cart values using formatCurrency helper with Rs.', () => {
       const formattedTotalLost = formatCurrency(1240.5);
       const formattedAvgCart = formatCurrency(124.05);
 
+      expect(formattedTotalLost).toContain('Rs.');
       expect(formattedTotalLost).toContain('1,240.50');
+      expect(formattedAvgCart).toContain('Rs.');
       expect(formattedAvgCart).toContain('124.05');
     });
   });
+
 });

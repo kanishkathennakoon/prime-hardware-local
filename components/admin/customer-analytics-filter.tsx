@@ -80,8 +80,9 @@ export default function CustomerAnalyticsFilter({
     >
       <div className='flex-1 min-w-[180px] space-y-1.5'>
         <Label htmlFor='minSpend' className='text-xs font-semibold'>
-          Min Lifetime Spend ($)
+          Min Lifetime Spend (Rs.)
         </Label>
+
         <Input
           id='minSpend'
           type='number'

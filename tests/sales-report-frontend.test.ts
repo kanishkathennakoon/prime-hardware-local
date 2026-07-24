@@ -12,12 +12,15 @@ describe('Sales Report Frontend - Feature F-01B', () => {
   });
 
   describe('Currency & KPI Formatting', () => {
-    it('should format revenue and AOV using formatCurrency helper', () => {
+    it('should format revenue and AOV using formatCurrency helper in Rs.', () => {
       const formattedRevenue = formatCurrency(1250.5);
       const formattedAOV = formatCurrency(125.05);
 
+      expect(formattedRevenue).toContain('Rs.');
       expect(formattedRevenue).toContain('1,250.50');
+      expect(formattedAOV).toContain('Rs.');
       expect(formattedAOV).toContain('125.05');
     });
   });
+
 });
