@@ -89,7 +89,7 @@ const PlaceOrderPage = async () => {
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
-                          href={`/product/{item.slug}`}
+                          href={`/product/${item.slug}`}
                           className='flex items-center'
                         >
                           <Image
@@ -105,8 +105,9 @@ const PlaceOrderPage = async () => {
                         <span className='px-2'>{item.qty}</span>
                       </TableCell>
                       <TableCell className='text-right'>
-                        ${item.price}
+                        {formatCurrency(item.price)}
                       </TableCell>
+
                     </TableRow>
                   ))}
                 </TableBody>
