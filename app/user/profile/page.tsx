@@ -29,6 +29,7 @@ const Profile = async () => {
       <div className='max-w-md mx-auto space-y-4'>
         <h2 className='h2-bold'>Profile</h2>
         <ProfileForm
+          isAdmin={session?.user?.role === 'admin'}
           initialData={{
             name: user?.name || session?.user?.name || '',
             email: user?.email || session?.user?.email || '',
