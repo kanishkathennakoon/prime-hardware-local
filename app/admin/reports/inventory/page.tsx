@@ -72,12 +72,7 @@ export default async function InventoryReportPage({ searchParams }: InventoryRep
         </p>
       </div>
 
-      <InventoryReportFilter
-        initialThreshold={threshold}
-        initialCategory={category}
-        initialSortBy={sortBy}
-        categories={data.categories}
-      />
+      
 
       {/* KPI Cards */}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>

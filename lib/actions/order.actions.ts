@@ -353,11 +353,15 @@ export async function getOrderSummary() {
 export async function getAllOrders({
   limit = PAGE_SIZE,
   page,
-  query,
+   query,
+  startDate,
+  endDate,
 }: {
   limit?: number;
   page: number;
   query: string;
+  startDate: string;
+  endDate: string;
 }) {
   const queryFilter: Prisma.OrderWhereInput =
     query && query !== 'all'
@@ -374,6 +378,10 @@ export async function getAllOrders({
   const data = await prisma.order.findMany({
     where: {
       ...queryFilter,
+      createdAt: {
+        gte: startDate ? new Date(startDate) : undefined,
+        lte: endDate ? new Date(endDate) : undefined,
+      },
     },
     orderBy: { createdAt: 'desc' },
     take: limit,
