@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 interface ProfileFormProps {
+  isAdmin?: boolean;
   initialData?: {
     name?: string;
     email?: string;
@@ -29,7 +30,7 @@ interface ProfileFormProps {
   };
 }
 
-const ProfileForm = ({ initialData }: ProfileFormProps) => {
+const ProfileForm = ({ initialData, isAdmin }: ProfileFormProps) => {
   const { data: session, update } = useSession();
 
   const form = useForm<z.infer<typeof updateProfileSchema>>({
@@ -114,37 +115,19 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
             )}
           />
 
-          <div className='pt-2 border-t border-border'>
-            <h3 className='text-sm font-semibold mb-3 text-muted-foreground'>Shipping / Delivery Address</h3>
-            <div className='space-y-4'>
-              <FormField
-                control={form.control}
-                name='streetAddress'
-                render={({ field }) => (
-                  <FormItem className='w-full'>
-                    <FormLabel>Street Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='123 Main Street, Suite A'
-                        className='input-field'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className='grid grid-cols-2 gap-4'>
+          {!isAdmin && (
+            <div className='pt-2 border-t border-border'>
+              <h3 className='text-sm font-semibold mb-3 text-muted-foreground'>Shipping / Delivery Address</h3>
+              <div className='space-y-4'>
                 <FormField
                   control={form.control}
-                  name='city'
+                  name='streetAddress'
                   render={({ field }) => (
                     <FormItem className='w-full'>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel>Street Address</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder='City / Town'
+                          placeholder='123 Main Street, Suite A'
                           className='input-field'
                           {...field}
                         />
@@ -153,15 +136,53 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
                     </FormItem>
                   )}
                 />
+
+                <div className='grid grid-cols-2 gap-4'>
+                  <FormField
+                    control={form.control}
+                    name='city'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='City / Town'
+                            className='input-field'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='postalCode'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>Postal Code</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='Postal Code'
+                            className='input-field'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
-                  name='postalCode'
+                  name='country'
                   render={({ field }) => (
                     <FormItem className='w-full'>
-                      <FormLabel>Postal Code</FormLabel>
+                      <FormLabel>Country</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder='Postal Code'
+                          placeholder='Country'
                           className='input-field'
                           {...field}
                         />
@@ -171,26 +192,8 @@ const ProfileForm = ({ initialData }: ProfileFormProps) => {
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name='country'
-                render={({ field }) => (
-                  <FormItem className='w-full'>
-                    <FormLabel>Country</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Country'
-                        className='input-field'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
-          </div>
+          )}
         </div>
 
         <Button
