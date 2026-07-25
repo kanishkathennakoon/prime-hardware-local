@@ -126,7 +126,9 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                       <span>{item.qty}</span>
                       <AddButton item={item} />
                     </TableCell>
-                    <TableCell className='text-right'>${item.price}</TableCell>
+                    <TableCell className='text-right'>
+                      {formatCurrency(item.price)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

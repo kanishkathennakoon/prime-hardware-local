@@ -234,6 +234,59 @@ const sampleData = {
       banner: null,
     },
   ],
+  reviews: [
+    {
+      userEmail: 'user@example.com',
+      productSlug: 'rhino-premier-roofing-sheet',
+      title: 'Outstanding Quality and Leak Protection',
+      description: 'Installed these Rhino sheets on our warehouse roof. Excellent build quality, fits perfectly, and handled heavy rains without a single drop of leak!',
+      rating: 5,
+    },
+    {
+      userEmail: 'sarah@example.com',
+      productSlug: 'rhino-premier-roofing-sheet',
+      title: 'Durable & Easy to Install',
+      description: 'Great durability and smooth installation. Highly recommended for commercial or residential roofing.',
+      rating: 4,
+    },
+    {
+      userEmail: 'david@example.com',
+      productSlug: 'Nippon-Roofing-Paint---Water-Base',
+      title: 'Vibrant Finish & Great Coverage',
+      description: 'Applied two coats on my roof tiles. Gives a brilliant, long-lasting weather-resistant coat.',
+      rating: 5,
+    },
+    {
+      userEmail: 'sarah@example.com',
+      productSlug: 'nippon-ceiling-white',
+      title: 'Smooth & Bright White Finish',
+      description: 'Excellent ceiling paint! Covered dark spots nicely and brightened up our living room.',
+      rating: 4,
+    },
+    {
+      userEmail: 'david@example.com',
+      productSlug: 'orange-led-bulbs-w-w-screw-type-e27',
+      title: 'Warm & Energy Efficient',
+      description: 'Bright warm white illumination for our shop showroom. Low power usage and great build quality.',
+      rating: 5,
+    },
+    {
+      userEmail: 'sarah@example.com',
+      productSlug: 'atg-maxiflex-ultimate-palm-coated-handling-gloves-42-874',
+      title: 'Superior Comfort & Firm Grip',
+      description: 'The best handling gloves for electrical and assembly work. Super breathable and flexible.',
+      rating: 5,
+    },
+    {
+      userEmail: 'user@example.com',
+      productSlug: '13-a-socket-kevilton-electric-socket-product',
+      title: 'Sturdy & Easy to Install',
+      description: 'Solid terminal connections and clean white finish. Fits standard mounting boxes smoothly.',
+      rating: 4,
+    },
+  ],
 };
 
 export default sampleData;
+
+

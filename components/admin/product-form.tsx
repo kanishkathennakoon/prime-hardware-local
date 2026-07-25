@@ -21,10 +21,11 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { createProduct, updateProduct } from '@/lib/actions/product.actions';
-import { UploadButton } from '@/lib/uploadthing';
+import FileUploader from './file-uploader';
 import { Card, CardContent } from '../ui/card';
 import Image from 'next/image';
 import { Checkbox } from '../ui/checkbox';
+import { Trash } from 'lucide-react';
 
 const ProductForm = ({
   type,
@@ -259,27 +260,44 @@ const ProductForm = ({
                 <Card>
                   <CardContent className='space-y-2 mt-2 min-h-48'>
                     <div className='flex-start space-x-2'>
-                      {images.map((image: string) => (
-                        <Image
-                          key={image}
-                          src={image}
-                          alt='product image'
-                          className='w-20 h-20 object-cover object-center rounded-sm'
-                          width={100}
-                          height={100}
-                        />
+                      {images.map((image: string, index: number) => (
+                        <div key={image} className='relative w-20 h-20 group'>
+                          <Image
+                            src={image}
+                            alt='product image'
+                            className='w-20 h-20 object-cover object-center rounded-sm'
+                            width={100}
+                            height={100}
+                          />
+                          <button
+                            type='button'
+                            onClick={async () => {
+                              const updated = images.filter(
+                                (_, i) => i !== index
+                              );
+                              form.setValue('images', updated);
+                              try {
+                                await fetch('/api/upload', {
+                                  method: 'DELETE',
+                                  headers: {
+                                    'Content-Type': 'application/json',
+                                  },
+                                  body: JSON.stringify({ url: image }),
+                                });
+                              } catch {}
+                            }}
+                            className='absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 shadow hover:bg-red-700 transition'
+                            title='Remove image'
+                          >
+                            <Trash className='w-3 h-3' />
+                          </button>
+                        </div>
                       ))}
                       <FormControl>
-                        <UploadButton
-                          endpoint='imageUploader'
-                          onClientUploadComplete={(res: { url: string }[]) => {
-                            form.setValue('images', [...images, res[0].url]);
-                          }}
-                          onUploadError={(error: Error) => {
-                            toast({
-                              variant: 'destructive',
-                              description: `ERROR! ${error.message}`,
-                            });
+                        <FileUploader
+                          folder={form.watch('slug') || 'general'}
+                          onUploadComplete={(url: string) => {
+                            form.setValue('images', [...images, url]);
                           }}
                         />
                       </FormControl>
@@ -312,26 +330,43 @@ const ProductForm = ({
                 )}
               />
               {isFeatured && banner && (
-                <Image
-                  src={banner}
-                  alt='banner image'
-                  className='w-full object-cover object-center rounded-sm'
-                  width={1920}
-                  height={680}
-                />
+                <div className='relative group'>
+                  <Image
+                    src={banner}
+                    alt='banner image'
+                    className='w-full object-cover object-center rounded-sm'
+                    width={1920}
+                    height={680}
+                  />
+                  <Button
+                    type='button'
+                    variant='destructive'
+                    size='sm'
+                    className='mt-2 flex items-center gap-1'
+                    onClick={async () => {
+                      const oldBanner = banner;
+                      form.setValue('banner', '');
+                      try {
+                        await fetch('/api/upload', {
+                          method: 'DELETE',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({ url: oldBanner }),
+                        });
+                      } catch {}
+                    }}
+                  >
+                    <Trash className='w-4 h-4' /> Remove Banner
+                  </Button>
+                </div>
               )}
 
               {isFeatured && !banner && (
-                <UploadButton
-                  endpoint='imageUploader'
-                  onClientUploadComplete={(res: { url: string }[]) => {
-                    form.setValue('banner', res[0].url);
-                  }}
-                  onUploadError={(error: Error) => {
-                    toast({
-                      variant: 'destructive',
-                      description: `ERROR! ${error.message}`,
-                    });
+                <FileUploader
+                  folder={form.watch('slug') || 'general'}
+                  onUploadComplete={(url: string) => {
+                    form.setValue('banner', url);
                   }}
                 />
               )}

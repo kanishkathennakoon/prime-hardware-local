@@ -7,18 +7,38 @@ import { auth } from '@/auth';
 import { prisma } from '@/db/prisma';
 import { revalidatePath } from 'next/cache';
 
+const isValidUuid = (val?: string) =>
+  typeof val === 'string' &&
+  /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+    val
+  );
+
 // Create & Update Reviews
 export async function createUpdateReview(
   data: z.infer<typeof insertReviewSchema>
 ) {
   try {
     const session = await auth();
-    if (!session) throw new Error('User is not authenticated');
+    if (!session || !session.user) throw new Error('User is not authenticated');
 
-    // Validate and store the review
+    // Find active user record by ID or Email (handles stale session cookies gracefully)
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          ...(isValidUuid(session.user.id) ? [{ id: session.user.id as string }] : []),
+          ...(session.user.email ? [{ email: session.user.email as string }] : []),
+        ],
+      },
+    });
+
+    if (!user) {
+      throw new Error('User account not found. Please sign out and sign in again.');
+    }
+
+    // Validate and store the review using active user.id
     const review = insertReviewSchema.parse({
       ...data,
-      userId: session?.user?.id,
+      userId: user.id,
     });
 
     // Get product that is being reviewed
@@ -27,6 +47,23 @@ export async function createUpdateReview(
     });
 
     if (!product) throw new Error('Product not found');
+
+    // Verify user is a verified purchaser who paid for this product
+    const hasPurchased = await prisma.order.findFirst({
+      where: {
+        userId: user.id,
+        isPaid: true,
+        orderitems: {
+          some: { productId: review.productId },
+        },
+      },
+    });
+
+    if (!hasPurchased) {
+      throw new Error(
+        'Only verified purchasers who have bought and paid for this item can leave a review.'
+      );
+    }
 
     // Check if user already reviewed
     const reviewExists = await prisma.review.findFirst({
@@ -73,7 +110,11 @@ export async function createUpdateReview(
       });
     });
 
-    revalidatePath(`/product/${product.slug}`);
+    try {
+      revalidatePath(`/product/${product.slug}`);
+    } catch (err) {
+      console.warn('Path revalidation skipped:', err instanceof Error ? err.message : err);
+    }
 
     return {
       success: true,
@@ -113,12 +154,53 @@ export async function getReviewByProductId({
 }) {
   const session = await auth();
 
-  if (!session) throw new Error('User is not authenticated');
+  if (!session || !session.user) return null;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        ...(isValidUuid(session.user.id) ? [{ id: session.user.id as string }] : []),
+        ...(session.user.email ? [{ email: session.user.email as string }] : []),
+      ],
+    },
+  });
+
+  if (!user) return null;
 
   return await prisma.review.findFirst({
     where: {
       productId,
-      userId: session?.user?.id,
+      userId: user.id,
     },
   });
+}
+
+// Check if current user is a verified purchaser for a product
+export async function getCanUserReview({ productId }: { productId: string }) {
+  const session = await auth();
+
+  if (!session || !session.user) return false;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        ...(isValidUuid(session.user.id) ? [{ id: session.user.id as string }] : []),
+        ...(session.user.email ? [{ email: session.user.email as string }] : []),
+      ],
+    },
+  });
+
+  if (!user) return false;
+
+  const purchase = await prisma.order.findFirst({
+    where: {
+      userId: user.id,
+      isPaid: true,
+      orderitems: {
+        some: { productId },
+      },
+    },
+  });
+
+  return !!purchase;
 }

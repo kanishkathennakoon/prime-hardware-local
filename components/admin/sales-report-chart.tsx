@@ -42,7 +42,8 @@ export default function SalesReportChart({ data }: SalesReportChartProps) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          width={85}
+          tickFormatter={(value) => `Rs. ${value}`}
         />
         <Tooltip
           formatter={(value: number, name: string) => [
