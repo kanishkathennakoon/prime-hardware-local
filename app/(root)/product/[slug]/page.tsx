@@ -70,20 +70,26 @@ const ProductDetailsPage = async (props: {
                     <Badge variant='destructive'>Out Of Stock</Badge>
                   )}
                 </div>
-                {product.stock > 0 && (
-                  <div className='flex-center'>
-                    <AddToCart
-                      cart={cart}
-                      item={{
-                        productId: product.id,
-                        name: product.name,
-                        slug: product.slug,
-                        price: product.price,
-                        qty: 1,
-                        image: product.images![0],
-                      }}
-                    />
+                {session?.user?.role === 'admin' ? (
+                  <div className='p-2 text-center text-xs text-muted-foreground bg-muted rounded mt-3'>
+                    Purchasing disabled for Admin accounts
                   </div>
+                ) : (
+                  product.stock > 0 && (
+                    <div className='flex-center mt-3'>
+                      <AddToCart
+                        cart={cart}
+                        item={{
+                          productId: product.id,
+                          name: product.name,
+                          slug: product.slug,
+                          price: product.price,
+                          qty: 1,
+                          image: product.images![0],
+                        }}
+                      />
+                    </div>
+                  )
                 )}
               </CardContent>
             </Card>

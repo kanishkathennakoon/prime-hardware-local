@@ -34,6 +34,12 @@ export async function addItemToCart(data: CartItem) {
 
     // Get session and user ID
     const session = await auth();
+    if (session?.user?.role === 'admin') {
+      return {
+        success: false,
+        message: 'Admin users are restricted from making purchases.',
+      };
+    }
     const userId = session?.user?.id ? (session.user.id as string) : undefined;
 
     // Get cart
