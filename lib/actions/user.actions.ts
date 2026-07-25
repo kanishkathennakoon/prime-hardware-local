@@ -53,7 +53,7 @@ export async function signOutUser() {
   } else {
     console.warn('No cart found for deletion.');
   }
-  await signOut();
+  await signOut({ redirectTo: '/sign-in' });
 }
 
 // Sign up user
