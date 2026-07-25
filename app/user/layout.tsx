@@ -3,12 +3,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Menu from '@/components/shared/header/menu';
 import MainNav from './main-nav';
+import { auth } from '@/auth';
 
-export default function UserLayout({
+export default async function UserLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  const isAdmin = session?.user?.role === 'admin';
+
   return (
     <>
       <div className='flex flex-col'>
@@ -22,7 +26,7 @@ export default function UserLayout({
                 alt={APP_NAME}
               />
             </Link>
-            <MainNav className='mx-6' />
+            <MainNav className='mx-6' isAdmin={isAdmin} />
             <div className='ml-auto items-center flex space-x-4'>
               <Menu />
             </div>

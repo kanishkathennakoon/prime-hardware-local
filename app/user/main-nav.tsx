@@ -15,17 +15,26 @@ const links = [
   },
 ];
 
+interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
+  isAdmin?: boolean;
+}
+
 const MainNav = ({
   className,
+  isAdmin,
   ...props
-}: React.HTMLAttributes<HTMLElement>) => {
+}: MainNavProps) => {
   const pathname = usePathname();
+  const filteredLinks = isAdmin
+    ? links.filter((item) => item.href !== '/user/orders')
+    : links;
+
   return (
     <nav
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
-      {links.map((item) => (
+      {filteredLinks.map((item) => (
         <Link
           key={item.href}
           href={item.href}
