@@ -8,7 +8,7 @@ const Charts = ({
 }) => {
   return (
     <ResponsiveContainer width='100%' height={350}>
-      <BarChart data={salesData}>
+      <BarChart data={salesData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
         <XAxis
           dataKey='month'
           stroke='#888888'
@@ -21,7 +21,8 @@ const Charts = ({
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value) => `$${value}`}
+          width={85}
+          tickFormatter={(value) => `Rs. ${value}`}
         />
         <Bar
           dataKey='totalSales'
