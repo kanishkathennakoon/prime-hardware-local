@@ -19,6 +19,12 @@ export async function createOrder() {
   try {
     const session = await auth();
     if (!session) throw new Error('User is not authenticated');
+    if (session?.user?.role === 'admin') {
+      return {
+        success: false,
+        message: 'Admin users are restricted from making purchases.',
+      };
+    }
 
     const cart = await getMyCart();
     const userId = session?.user?.id;

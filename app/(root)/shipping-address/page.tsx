@@ -17,6 +17,7 @@ const ShippingAddressPage = async () => {
   if (!cart || cart.items.length === 0) redirect('/cart');
 
   const session = await auth();
+  if (session?.user?.role === 'admin') redirect('/admin/overview');
 
   const userId = session?.user?.id;
 

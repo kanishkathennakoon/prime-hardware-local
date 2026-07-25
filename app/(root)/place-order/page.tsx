@@ -27,6 +27,7 @@ export const metadata: Metadata = {
 const PlaceOrderPage = async () => {
   const cart = await getMyCart();
   const session = await auth();
+  if (session?.user?.role === 'admin') redirect('/admin/overview');
   const userId = session?.user?.id;
 
   if (!userId) throw new Error('User not found');

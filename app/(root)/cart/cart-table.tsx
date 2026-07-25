@@ -82,7 +82,7 @@ function RemoveButton({ item }: { item: CartItem }) {
   );
 }
 
-const CartTable = ({ cart }: { cart?: Cart }) => {
+const CartTable = ({ cart, isAdmin }: { cart?: Cart; isAdmin?: boolean }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -122,9 +122,15 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                       </Link>
                     </TableCell>
                     <TableCell className='flex-center gap-2'>
-                      <RemoveButton item={item} />
-                      <span>{item.qty}</span>
-                      <AddButton item={item} />
+                      {isAdmin ? (
+                        <span>{item.qty}</span>
+                      ) : (
+                        <>
+                          <RemoveButton item={item} />
+                          <span>{item.qty}</span>
+                          <AddButton item={item} />
+                        </>
+                      )}
                     </TableCell>
                     <TableCell className='text-right'>
                       {formatCurrency(item.price)}
@@ -143,20 +149,26 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                   {formatCurrency(cart.itemsPrice)}
                 </span>
               </div>
-              <Button
-                className='w-full'
-                disabled={isPending}
-                onClick={() =>
-                  startTransition(() => router.push('/shipping-address'))
-                }
-              >
-                {isPending ? (
-                  <Loader className='w-4 h-4 animate-spin' />
-                ) : (
-                  <ArrowRight className='w-4 h-4' />
-                )}{' '}
-                Proceed to Checkout
-              </Button>
+              {isAdmin ? (
+                <div className='text-xs text-center text-muted-foreground bg-muted p-2 rounded'>
+                  Purchasing disabled for Admin accounts
+                </div>
+              ) : (
+                <Button
+                  className='w-full'
+                  disabled={isPending}
+                  onClick={() =>
+                    startTransition(() => router.push('/shipping-address'))
+                  }
+                >
+                  {isPending ? (
+                    <Loader className='w-4 h-4 animate-spin' />
+                  ) : (
+                    <ArrowRight className='w-4 h-4' />
+                  )}{' '}
+                  Proceed to Checkout
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
