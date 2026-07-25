@@ -40,6 +40,7 @@ const ProductImages = ({ images }: { images: string[] }) => {
               src={image}
               alt={`product thumbnail ${index + 1}`}
               fill
+              sizes='80px'
               className='object-cover object-center'
             />
           </button>
